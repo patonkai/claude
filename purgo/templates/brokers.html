@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Brokers{% endblock %}
+{% block content %}
+<div class="row" style="justify-content:space-between"><h1>Broker registry</h1>
+  <form method="post" action="/admin/brokers/sync"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="secondary">Re-sync from {{ settings.brokers_file.name }}</button></form></div>
+<p class="muted small">Edit <code>{{ settings.brokers_file }}</code> to add brokers or correct contact details, then re-sync.
+Only <b>verified</b> brokers with an email address get requests sent automatically; everything else goes to the operator queue.</p>
+<div class="card table-scroll"><table>
+  <thead><tr><th>Broker</th><th>Region</th><th>Channel</th><th>Contact</th><th>Scan</th><th>Verified</th></tr></thead><tbody>
+  {% for b in brokers %}<tr {% if not b.active %}class="muted"{% endif %}>
+    <td><a href="{{ b.website }}" rel="noopener noreferrer" target="_blank">{{ b.name }}</a><br><span class="small muted">{{ b.slug }}{% if not b.active %} (inactive){% endif %}</span></td>
+    <td>{{ b.jurisdiction }} / {{ b.law }}</td><td>{{ b.channel.value }}</td>
+    <td class="small">{{ b.privacy_email or b.optout_url or b.postal_address or '-' }}</td>
+    <td>{{ 'yes' if b.search_url else 'manual' }}</td>
+    <td>{% if b.verified %}<span class="chip completed">verified</span>{% else %}<span class="chip manual_check">unverified</span>{% endif %}</td>
+  </tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

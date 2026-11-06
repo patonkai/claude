@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Operator queue{% endblock %}
+{% block content %}
+<h1>Operator queue</h1>
+<div class="grid">
+  <div class="card stat"><b>{{ stats.customers }}</b><span class="muted small">accounts</span></div>
+  <div class="card stat"><b>{{ stats.open }}</b><span class="muted small">open requests</span></div>
+  <div class="card stat"><b>{{ stats.completed }}</b><span class="muted small">completed</span></div>
+  <div class="card stat"><b>{{ stats.refused }}</b><span class="muted small">refused</span></div>
+</div>
+
+{% macro reqtable(rows, empty) %}
+  {% if rows %}<div class="table-scroll"><table>
+    <thead><tr><th>Ref</th><th>Customer</th><th>Broker</th><th>Channel</th><th>Status</th><th>Due</th></tr></thead><tbody>
+    {% for r in rows %}<tr>
+      <td><a href="/requests/{{ r.id }}">{{ r.reference }}</a></td><td>{{ r.user.profile.full_name }}</td><td>{{ r.broker.name }}</td>
+      <td>{{ r.channel.value }}</td><td><span class="chip {{ r.status.value }}">{{ r.status | label }}</span></td>
+      <td class="{{ 'warn-badge' if r.due_at and r.due_at < now }}">{{ r.due_at | d }}</td></tr>{% endfor %}
+  </tbody></table></div>{% else %}<p class="muted">{{ empty }}</p>{% endif %}
+{% endmacro %}
+
+<div class="card"><h2>To submit (web forms, letters, unverified contacts)</h2>{{ reqtable(queued, "Nothing waiting.") }}</div>
+<div class="card"><h2>Escalated &ndash; review complaint drafts</h2>{{ reqtable(escalated, "No escalations.") }}</div>
+<div class="card"><h2>Waiting for broker response</h2>{{ reqtable(waiting, "No requests in flight.") }}</div>
+
+<div class="card"><h2>Exposure checks to review</h2>
+  {% if manual %}<div class="table-scroll"><table>
+    <thead><tr><th>Customer</th><th>Broker</th><th>Status</th><th>Note</th><th></th></tr></thead><tbody>
+    {% for f in manual %}<tr>
+      <td>{{ f.user.profile.full_name }}</td>
+      <td>{{ f.broker.name }}{% if f.evidence_url %}<br><a class="small" href="{{ f.evidence_url }}" rel="noopener noreferrer" target="_blank">search page</a>{% endif %}</td>
+      <td><span class="chip {{ f.status.value }}">{{ f.status | label }}</span></td>
+      <td class="small muted">{{ f.evidence_note }}</td>
+      <td class="row">
+        <form class="inline" method="post" action="/findings/{{ f.id }}/confirm"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="small">Listed</button></form>
+        <form class="inline" method="post" action="/findings/{{ f.id }}/dismiss"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="small secondary">Not listed</button></form>
+      </td></tr>{% endfor %}
+  </tbody></table></div>{% else %}<p class="muted">Nothing to review.</p>{% endif %}
+</div>
+{% endblock %}

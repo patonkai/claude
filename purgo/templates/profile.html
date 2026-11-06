@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<h1>Your profile</h1>
+<p class="muted">We search for these details and include them in erasure requests so brokers can find your records.
+Only add what you want removed.</p>
+<form class="card" method="post" action="/profile">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <div class="grid">
+    <div><label for="fn">First name</label><input id="fn" type="text" name="first_name" value="{{ profile.first_name }}" required></div>
+    <div><label for="ln">Last name</label><input id="ln" type="text" name="last_name" value="{{ profile.last_name }}" required></div>
+    <div><label for="bd">Date of birth <span class="muted small">(optional)</span></label>
+      <input id="bd" type="date" name="birth_date" value="{{ profile.birth_date.isoformat() if profile.birth_date else '' }}"></div>
+    <div><label for="lang">Request language</label>
+      <select id="lang" name="language">
+        <option value="de" {{ 'selected' if user.language == 'de' }}>Deutsch</option>
+        <option value="en" {{ 'selected' if user.language == 'en' }}>English</option>
+      </select></div>
+  </div>
+  <label for="al">Other names <span class="muted small">(one per line, e.g. maiden name)</span></label>
+  <textarea id="al" name="aliases">{{ profile.aliases | join('\n') }}</textarea>
+  <label for="em">Email addresses <span class="muted small">(one per line)</span></label>
+  <textarea id="em" name="emails">{{ profile.emails | join('\n') }}</textarea>
+  <label for="ph">Phone numbers <span class="muted small">(one per line)</span></label>
+  <textarea id="ph" name="phones">{{ profile.phones | join('\n') }}</textarea>
+  <label for="ad">Postal addresses, current and past <span class="muted small">(one per line: Street 1, 1010 Wien, AT)</span></label>
+  <textarea id="ad" name="addresses">{% for a in profile.addresses %}{{ a | address }}
+{% endfor %}</textarea>
+  <p><button>Save profile</button></p>
+</form>
+
+<div class="card">
+  <h2>Your data</h2>
+  <p class="row"><a class="btn secondary" href="/account/export">Download all my data (JSON)</a></p>
+  <form method="post" action="/account/delete" class="row">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <input type="text" name="confirm" placeholder="Type DELETE" style="max-width:180px" aria-label="Type DELETE to confirm">
+    <button class="danger">Delete account and revoke authorisation</button>
+  </form>
+</div>
+{% endblock %}

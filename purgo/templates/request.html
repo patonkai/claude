@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Request {{ req.reference }}{% endblock %}
+{% block content %}
+<p><a href="{{ '/admin' if user.is_admin else '/dashboard' }}">&larr; Back</a></p>
+<h1>{{ req.broker.name }} <span class="chip {{ req.status.value }}">{{ req.status | label }}</span></h1>
+<div class="card">
+  <div class="grid small">
+    <div><span class="muted">Reference</span><br><b>{{ req.reference }}</b></div>
+    <div><span class="muted">Customer</span><br>{{ req.user.profile.full_name }}</div>
+    <div><span class="muted">Channel</span><br>{{ req.channel.value }}</div>
+    <div><span class="muted">Sent</span><br>{{ req.sent_at | dt }}</div>
+    <div><span class="muted">Due</span><br>{{ req.due_at | d }}</div>
+  </div>
+  <p class="small"><span class="muted">Recipient:</span>
+    {% if req.recipient.startswith('http') %}<a href="{{ req.recipient }}" rel="noopener noreferrer" target="_blank">{{ req.recipient }}</a>{% else %}{{ req.recipient or "not on file" }}{% endif %}</p>
+  {% if req.broker.instructions %}<p class="small"><span class="muted">Instructions:</span> {{ req.broker.instructions }}</p>{% endif %}
+  {% if not req.broker.verified %}<p class="warn-badge">Broker contact details have not been verified by an operator.</p>{% endif %}
+</div>
+
+{% if user.is_admin %}
+<div class="card">
+  <h2>Operator actions</h2>
+  <form method="post" class="row" style="align-items:flex-end">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <div style="flex:1;min-width:220px"><label for="note">Note / broker reply / new recipient</label><input id="note" type="text" name="note"></div>
+    {% if req.status.value in ('queued','failed') %}
+      {% if req.channel.value == 'email' %}<button formaction="/admin/requests/{{ req.id }}/send">Send email now</button>{% endif %}
+      <button formaction="/admin/requests/{{ req.id }}/submitted">Mark submitted</button>
+      <button class="secondary" formaction="/admin/requests/{{ req.id }}/recipient">Set recipient</button>
+    {% endif %}
+    {% if req.status.value in ('sent','followed_up','escalated') %}
+      <button formaction="/admin/requests/{{ req.id }}/completed">Broker confirmed erasure</button>
+      <button class="danger" formaction="/admin/requests/{{ req.id }}/refused">Broker refused</button>
+    {% endif %}
+    <button class="secondary" formaction="/admin/requests/{{ req.id }}/note">Add note</button>
+  </form>
+</div>
+{% endif %}
+
+<div class="card"><h2>{{ req.subject }}</h2><pre class="letter">{{ req.body }}</pre></div>
+{% if req.complaint_draft %}<div class="card"><h2>Draft complaint</h2><pre class="letter">{{ req.complaint_draft }}</pre></div>{% endif %}
+
+<div class="card"><h2>History</h2>
+  <table><tbody>
+  {% for e in req.events %}
+    <tr><td class="small muted" style="white-space:nowrap">{{ e.created_at | dt }}</td><td><b>{{ e.kind | label }}</b> <span class="muted small">{{ e.actor }}</span>
+      {% if e.detail %}<pre class="letter" style="margin:.3rem 0 0">{{ e.detail }}</pre>{% endif %}</td></tr>
+  {% endfor %}
+  </tbody></table>
+</div>
+{% endblock %}

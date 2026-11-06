@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Authorisation{% endblock %}
+{% block content %}
+<h1>Authorisation</h1>
+{% if profile.has_mandate %}
+  <div class="card">
+    <p>Signed by <b>{{ profile.mandate_signature }}</b> on {{ profile.mandate_signed_at | dt }} (UTC).</p>
+    <p class="muted small">{{ mandate }}</p>
+  </div>
+{% else %}
+<form class="card" method="post" action="/mandate">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <p>{{ mandate }}</p>
+  <label><input type="checkbox" name="agree" value="yes" required> I give this authorisation.</label>
+  <label for="sig">Type your full name to sign: <span class="muted">{{ profile.full_name }}</span></label>
+  <input id="sig" type="text" name="signature" required autocomplete="off">
+  <p><button>Sign authorisation</button></p>
+</form>
+{% endif %}
+{% endblock %}

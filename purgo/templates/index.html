@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Remove your personal data{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Get your personal data off data broker sites.</h1>
+  <p class="muted">Purgo finds where address brokers, directories and people-search sites list you, sends legally grounded
+  erasure requests on your behalf (GDPR Art. 17 &amp; 21, CCPA), chases the deadlines and re-checks regularly
+  so you don't get listed again.</p>
+  {% if user %}<a class="btn" href="/dashboard">Go to dashboard</a>{% else %}<a class="btn" href="/register">Start now</a>{% endif %}
+</section>
+<div class="card">
+  <h2>How it works</h2>
+  <ol class="steps">
+    <li><b>Tell us what to look for</b>: names, emails, phone numbers and addresses.</li>
+    <li><b>Sign the authorisation</b> so we can act as your representative.</li>
+    <li><b>We scan {{ broker_count }} brokers</b> and show you where you appear.</li>
+    <li><b>We send erasure requests</b> by email, web form or letter, and track the statutory deadline.</li>
+    <li><b>We follow up and escalate</b>: reminders after the deadline, and a draft complaint to the supervisory authority if a broker ignores you.</li>
+    <li><b>We re-scan every {{ settings.rescan_days }} days</b> and act again if you get re-listed.</li>
+  </ol>
+</div>
+{% endblock %}

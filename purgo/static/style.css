@@ -1,0 +1,53 @@
+:root {
+  --bg: #f6f7f9; --surface: #ffffff; --text: #1b1f24; --muted: #5d6673; --border: #dde1e6;
+  --accent: #1f6f5c; --accent-text: #ffffff; --danger: #b3261e; --warn: #9a6700; --ok: #1a7f37;
+  --chip: #eef1f4; --radius: 10px;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #111418; --surface: #1a1e23; --text: #e6e9ed; --muted: #9aa4af; --border: #2c323a;
+          --accent: #4cc3a0; --accent-text: #0b1512; --danger: #ff8a80; --warn: #e3b341; --ok: #56d364; --chip: #242a31; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); line-height: 1.5; }
+a { color: var(--accent); }
+header.top { background: var(--surface); border-bottom: 1px solid var(--border); }
+header.top .wrap { display: flex; align-items: center; gap: 1rem; padding: .75rem 1rem; flex-wrap: wrap; }
+header.top .brand { font-weight: 700; font-size: 1.15rem; text-decoration: none; color: var(--text); margin-right: auto; }
+header.top nav { display: flex; gap: .9rem; align-items: center; flex-wrap: wrap; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 1.25rem 1rem; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 1.25rem; }
+h1 { font-size: 1.6rem; margin: 0 0 .75rem; } h2 { font-size: 1.15rem; margin: 0 0 .75rem; }
+.muted { color: var(--muted); } .small { font-size: .875rem; }
+.grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.stat { text-align: center; } .stat b { display: block; font-size: 1.8rem; }
+table { width: 100%; border-collapse: collapse; font-size: .925rem; }
+th, td { text-align: left; padding: .55rem .5rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .03em; }
+.table-scroll { overflow-x: auto; }
+form.inline { display: inline; }
+label { display: block; font-weight: 600; margin: .75rem 0 .25rem; }
+input[type=text], input[type=email], input[type=password], input[type=date], textarea, select {
+  width: 100%; padding: .55rem .65rem; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--bg); color: var(--text); font: inherit; }
+textarea { min-height: 4.5rem; }
+button, .btn { display: inline-block; background: var(--accent); color: var(--accent-text); border: 0; border-radius: 8px;
+  padding: .5rem .9rem; font: inherit; font-weight: 600; cursor: pointer; text-decoration: none; }
+button.secondary, .btn.secondary { background: var(--chip); color: var(--text); }
+button.link { background: none; color: var(--accent); padding: 0; font-weight: 500; }
+button.danger { background: var(--danger); color: #fff; }
+button.small { padding: .25rem .55rem; font-size: .8rem; }
+.chip { display: inline-block; padding: .1rem .5rem; border-radius: 999px; background: var(--chip); font-size: .78rem; white-space: nowrap; }
+.chip.suspected, .chip.confirmed, .chip.queued, .chip.failed, .chip.escalated { color: var(--danger); }
+.chip.manual_check, .chip.removal_requested, .chip.sent, .chip.followed_up { color: var(--warn); }
+.chip.removed, .chip.not_found, .chip.completed { color: var(--ok); }
+.flash { padding: .7rem 1rem; border-radius: 8px; margin-bottom: 1rem; background: var(--chip); }
+.flash.error { border-left: 4px solid var(--danger); } .flash.info { border-left: 4px solid var(--accent); }
+pre.letter { white-space: pre-wrap; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85rem; }
+.hero { padding: 2.5rem 0 1rem; } .hero h1 { font-size: 2.1rem; }
+.steps { counter-reset: s; list-style: none; padding: 0; } .steps li { counter-increment: s; margin: .6rem 0; padding-left: 2.2rem; position: relative; }
+.steps li::before { content: counter(s); position: absolute; left: 0; width: 1.6rem; height: 1.6rem; border-radius: 50%;
+  background: var(--accent); color: var(--accent-text); text-align: center; font-weight: 700; font-size: .85rem; line-height: 1.6rem; }
+.row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; }
+.warn-badge { color: var(--warn); font-size: .78rem; }

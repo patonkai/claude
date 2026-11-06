@@ -1,0 +1,221 @@
+# Broker registry.
+#
+# IMPORTANT: Contact details and opt-out URLs change frequently. Every entry ships with
+# `verified: false`. An operator must check each entry against the broker's current
+# privacy policy before using it in production and then set `verified: true`.
+#
+# Fields:
+#   slug          unique id
+#   channel       email | webform | postal   (how erasure requests are delivered)
+#   privacy_email recipient for channel=email
+#   optout_url    page for channel=webform (an operator completes it from the queue)
+#   postal_address  for channel=postal
+#   search_url    optional template for automated scans; placeholders:
+#                 {first} {last} {first_lower} {last_lower} {city} {full_name}
+#   law           GDPR (EU/EEA/UK brokers) or CCPA (US brokers) - selects the letter template
+
+brokers:
+  # ---------------------------------------------------------------- Austria
+  - slug: robinsonliste-at
+    name: Robinsonliste (WKO, Fachverband Werbung und Marktkommunikation)
+    website: https://www.wko.at
+    jurisdiction: AT
+    law: GDPR
+    category: opt-out-list
+    channel: webform
+    optout_url: https://www.wko.at
+    instructions: >-
+      Register the customer on the Austrian Robinson list (§ 151 GewO) so address publishers
+      and direct marketers must not use their data for marketing. Search wko.at for
+      "Robinsonliste" to reach the current registration form.
+    verified: false
+
+  - slug: post-at-adressverlag
+    name: Österreichische Post AG (address publishing / direct marketing)
+    website: https://www.post.at
+    jurisdiction: AT
+    law: GDPR
+    category: address-publisher
+    channel: webform
+    optout_url: https://www.post.at
+    instructions: >-
+      Use the contact address given in the current Post AG privacy notice for data subject
+      requests and object to marketing use of address data (Art. 21(2) GDPR).
+    verified: false
+
+  - slug: herold-at
+    name: HEROLD Business Data GmbH
+    website: https://www.herold.at
+    jurisdiction: AT
+    law: GDPR
+    category: directory
+    channel: webform
+    optout_url: https://www.herold.at
+    search_url: https://www.herold.at/telefonbuch/suche/?userTerm={first}+{last}
+    instructions: >-
+      Directory listings (Telefonbuch). Request deletion of the private listing and
+      objection to marketing use. Contact via the privacy notice on herold.at.
+    verified: false
+
+  # ---------------------------------------------------------------- Germany
+  - slug: deutsche-post-direkt
+    name: Deutsche Post Direkt GmbH
+    website: https://www.deutschepost.de
+    jurisdiction: DE
+    law: GDPR
+    category: address-broker
+    channel: postal
+    instructions: Find the current data protection contact in the Deutsche Post Direkt privacy notice.
+    verified: false
+
+  - slug: az-direct
+    name: AZ Direct GmbH
+    website: https://www.az-direct.com
+    jurisdiction: DE
+    law: GDPR
+    category: address-broker
+    channel: postal
+    instructions: Find the current data protection contact in the AZ Direct privacy notice.
+    verified: false
+
+  - slug: acxiom-de
+    name: Acxiom Deutschland GmbH
+    website: https://www.acxiom.de
+    jurisdiction: DE
+    law: GDPR
+    category: marketing-data
+    channel: postal
+    instructions: Find the current data protection contact in the Acxiom Deutschland privacy notice.
+    verified: false
+
+  - slug: schober
+    name: Schober Information Group
+    website: https://www.schober.de
+    jurisdiction: DE
+    law: GDPR
+    category: address-broker
+    channel: postal
+    instructions: Find the current data protection contact in the Schober privacy notice.
+    verified: false
+
+  - slug: dasoertliche
+    name: Das Örtliche
+    website: https://www.dasoertliche.de
+    jurisdiction: DE
+    law: GDPR
+    category: directory
+    channel: webform
+    optout_url: https://www.dasoertliche.de
+    search_url: https://www.dasoertliche.de/?kw={first}+{last}&ci={city}
+    instructions: Directory entries usually originate from the phone carrier; also ask the carrier to remove the listing.
+    verified: false
+
+  # ---------------------------------------------------------------- United States
+  - slug: spokeo
+    name: Spokeo
+    website: https://www.spokeo.com
+    jurisdiction: US
+    law: CCPA
+    category: people-search
+    channel: webform
+    optout_url: https://www.spokeo.com/optout
+    search_url: https://www.spokeo.com/{first}-{last}
+    instructions: Paste the listing URL, enter an email address and confirm via the email link.
+    verified: false
+
+  - slug: whitepages
+    name: Whitepages
+    website: https://www.whitepages.com
+    jurisdiction: US
+    law: CCPA
+    category: people-search
+    channel: webform
+    optout_url: https://www.whitepages.com/suppression-requests
+    search_url: https://www.whitepages.com/name/{first}-{last}
+    instructions: Paste the listing URL, verify by phone call when prompted.
+    verified: false
+
+  - slug: beenverified
+    name: BeenVerified
+    website: https://www.beenverified.com
+    jurisdiction: US
+    law: CCPA
+    category: people-search
+    channel: webform
+    optout_url: https://www.beenverified.com/app/optout/search
+    instructions: Search the record, select it and confirm via email.
+    verified: false
+
+  - slug: truepeoplesearch
+    name: TruePeopleSearch
+    website: https://www.truepeoplesearch.com
+    jurisdiction: US
+    law: CCPA
+    category: people-search
+    channel: webform
+    optout_url: https://www.truepeoplesearch.com/removal
+    search_url: https://www.truepeoplesearch.com/results?name={first}%20{last}
+    verified: false
+
+  - slug: fastpeoplesearch
+    name: FastPeopleSearch
+    website: https://www.fastpeoplesearch.com
+    jurisdiction: US
+    law: CCPA
+    category: people-search
+    channel: webform
+    optout_url: https://www.fastpeoplesearch.com/removal
+    search_url: https://www.fastpeoplesearch.com/name/{first_lower}-{last_lower}
+    verified: false
+
+  - slug: radaris
+    name: Radaris
+    website: https://radaris.com
+    jurisdiction: US
+    law: CCPA
+    category: people-search
+    channel: webform
+    optout_url: https://radaris.com/control/privacy
+    search_url: https://radaris.com/p/{first}/{last}/
+    verified: false
+
+  - slug: peopleconnect
+    name: PeopleConnect (Intelius, TruthFinder, Instant Checkmate, US Search)
+    website: https://www.intelius.com
+    jurisdiction: US
+    law: CCPA
+    category: people-search
+    channel: webform
+    optout_url: https://suppression.peopleconnect.us/login
+    instructions: One suppression request covers all PeopleConnect brands.
+    verified: false
+
+  - slug: peoplefinders
+    name: PeopleFinders
+    website: https://www.peoplefinders.com
+    jurisdiction: US
+    law: CCPA
+    category: people-search
+    channel: webform
+    optout_url: https://www.peoplefinders.com/opt-out
+    verified: false
+
+  - slug: thatsthem
+    name: ThatsThem
+    website: https://thatsthem.com
+    jurisdiction: US
+    law: CCPA
+    category: people-search
+    channel: webform
+    optout_url: https://thatsthem.com/optout
+    verified: false
+
+  - slug: acxiom-us
+    name: Acxiom LLC (US)
+    website: https://www.acxiom.com
+    jurisdiction: US
+    law: CCPA
+    category: marketing-data
+    channel: webform
+    optout_url: https://isapps.acxiom.com/optout/optout.aspx
+    verified: false

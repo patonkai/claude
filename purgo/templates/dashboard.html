@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+{% if not profile or not profile.is_complete %}
+  <div class="flash error">Your profile is incomplete. <a href="/profile">Add your details</a>.</div>
+{% elif not profile.has_mandate %}
+  <div class="flash error">Sign the <a href="/mandate">authorisation</a> so we can send requests for you.</div>
+{% endif %}
+
+<div class="grid">
+  <div class="card stat"><b>{{ counts[FindingStatus.suspected] + counts[FindingStatus.confirmed] }}</b><span class="muted small">listings found</span></div>
+  <div class="card stat"><b>{{ req_counts[RequestStatus.sent] + req_counts[RequestStatus.followed_up] + req_counts[RequestStatus.queued] + req_counts[RequestStatus.escalated] }}</b><span class="muted small">requests in progress</span></div>
+  <div class="card stat"><b>{{ counts[FindingStatus.removed] }}</b><span class="muted small">removed</span></div>
+  <div class="card stat"><b>{{ counts[FindingStatus.not_found] }}</b><span class="muted small">brokers clean</span></div>
+</div>
+
+<div class="card">
+  <div class="row" style="justify-content:space-between">
+    <div><h2 style="margin:0">Brokers</h2>
+      <span class="muted small">Last scan: {{ profile.last_scan_at | dt if profile and profile.last_scan_at else "never" }}</span></div>
+    <div class="row">
+      <form class="inline" method="post" action="/scan"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="secondary">Scan now</button></form>
+      <form class="inline" method="post" action="/requests/all"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Request removal everywhere</button></form>
+    </div>
+  </div>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Broker</th><th>Region</th><th>Exposure</th><th>Request</th><th></th></tr></thead>
+    <tbody>
+    {% for b in brokers %}
+      {% set f = findings.get(b.id) %}{% set r = requests_by_broker.get(b.id) %}
+      <tr>
+        <td><a href="{{ b.website }}" rel="noopener noreferrer" target="_blank">{{ b.name }}</a><br><span class="muted small">{{ b.category }}</span></td>
+        <td>{{ b.jurisdiction }} <span class="muted small">{{ b.law }}</span></td>
+        <td>
+          <span class="chip {{ f.status.value if f else 'unchecked' }}">{{ (f.status if f else 'unchecked') | label }}</span>
+          {% if f and f.evidence_url %}<br><a class="small" href="{{ f.evidence_url }}" rel="noopener noreferrer" target="_blank">search page</a>{% endif %}
+          {% if f and f.evidence_note %}<br><span class="muted small">{{ f.evidence_note }}</span>{% endif %}
+          {% if f and f.status == FindingStatus.suspected %}
+            <div class="row" style="margin-top:.3rem">
+              <form class="inline" method="post" action="/findings/{{ f.id }}/confirm"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="small">That's me</button></form>
+              <form class="inline" method="post" action="/findings/{{ f.id }}/dismiss"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="small secondary">Not me</button></form>
+            </div>
+          {% endif %}
+        </td>
+        <td>{% if r %}<a href="/requests/{{ r.id }}"><span class="chip {{ r.status.value }}">{{ r.status | label }}</span></a>
+            {% if r.due_at and r.status.value in ('sent','followed_up') %}<br><span class="muted small">due {{ r.due_at | d }}</span>{% endif %}{% else %}<span class="muted">-</span>{% endif %}</td>
+        <td>{% if not r or r.status.value in ('completed','refused','failed') %}
+          <form class="inline" method="post" action="/brokers/{{ b.id }}/request"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="small secondary">Request removal</button></form>
+        {% endif %}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+</div>
+{% endblock %}

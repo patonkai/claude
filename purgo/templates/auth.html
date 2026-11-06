@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}{{ "Create account" if mode == "register" else "Log in" }}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:440px;margin:2rem auto">
+  <h1>{{ "Create account" if mode == "register" else "Log in" }}</h1>
+  <form method="post" action="/{{ mode }}">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <label for="email">Email</label><input id="email" type="email" name="email" required autocomplete="email">
+    <label for="password">Password</label>
+    <input id="password" type="password" name="password" required minlength="{{ 10 if mode == 'register' else 1 }}"
+           autocomplete="{{ 'new-password' if mode == 'register' else 'current-password' }}">
+    {% if mode == "register" %}
+      <label for="language">Language for your requests to EU brokers</label>
+      <select id="language" name="language"><option value="de">Deutsch</option><option value="en">English</option></select>
+    {% endif %}
+    <p><button>{{ "Create account" if mode == "register" else "Log in" }}</button></p>
+  </form>
+  <p class="small muted">{% if mode == "register" %}Already have an account? <a href="/login">Log in</a>{% else %}New here? <a href="/register">Create an account</a>{% endif %}</p>
+</div>
+{% endblock %}
